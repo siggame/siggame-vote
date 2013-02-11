@@ -162,6 +162,8 @@ INSTALLED_APPS = (
     # django-crispy-forms
     'crispy_forms',
 
+    'vote.accounts',
+
     'django_extensions',
 )
 
