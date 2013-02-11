@@ -35,12 +35,7 @@ MESSAGE_TAGS = {
 }
 
 # Should be overridden by development.py or production.py
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(VAR_DIR, "db", "development.db")
-    }
-}
+DATABASES = None
 
 # Add project/fixtures to the list of places where django looks for
 # fixtures to install.
