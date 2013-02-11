@@ -1,0 +1,2 @@
+
+from vote.settings import *
