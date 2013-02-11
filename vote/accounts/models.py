@@ -5,6 +5,7 @@ from django.dispatch import receiver
 
 from os import urandom
 from hashlib import sha1
+import requests
 
 
 def generate_state():
@@ -23,6 +24,17 @@ class State(models.Model):
 class GitHubToken(models.Model):
     user = models.OneToOneField(User)
     token = models.CharField(max_length=40, null=True)
+
+    def _get(self, path, params=None):
+        if params is None:
+            params = {}
+        params.update({'access_token': self.token})
+        resp = requests.get(path, params=params)
+        return resp.json()
+
+    @property
+    def organizations(self):
+        return [x['login'] for x in self._get("/user/orgs")]
 
 
 @receiver(user_logged_out)

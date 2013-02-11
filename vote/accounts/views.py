@@ -3,7 +3,7 @@ from django.contrib.auth import login
 from django.conf import settings
 from django.http import Http404
 
-from .models import State
+from .models import State, GitHubToken
 
 from urllib import urlencode
 import requests
@@ -31,7 +31,7 @@ class LoginStageTwoView(RedirectView):
     def get(self, request, *args, **kwargs):
         # Once the user signs in, GitHub redirects them here,
         # passing a "code" query parameter and "state" query parameter
-        # We grab the code, and verify that the state string is the 
+        # We grab the code, and verify that the state string is the
         # same one that we sent earlier.
         try:
             code = request.GET['code']
@@ -53,7 +53,7 @@ class LoginStageTwoView(RedirectView):
                                  headers={'Accept': "application/json"},
                                  data=payload)
 
-        # In resonse, GitHub sends us an access token, which we can 
+        # In resonse, GitHub sends us an access token, which we can
         # use to act as the user on GitHub.
         try:
             auth_data = response.json()
@@ -68,23 +68,24 @@ class LoginStageTwoView(RedirectView):
                                 params=auth_data)
         github_username = response.json()['login']
 
-        # Then, we try to grab a User object to represent the logged in user.
-        # If they've logged in before, grab that object. Otherwise create a new one.
-        # Then, save the access_token for that user with the user object.
-        
+        # Then, we try to grab a User object to represent the logged
+        # in user.  If they've logged in before, grab that
+        # object. Otherwise create a new one.  Then, save the
+        # access_token for that user with the user object.
+
         # get_or_create returns the instance, and a boolean indicating
         # whether or not the thing was created. we don't care, so use
         # an underscore to throw it away.
         user, _ = User.objects.get_or_create(username=github_username)
-        token, _ = GitHubToken.objects.get_or_create(user=user)
+        github, _ = GitHubToken.objects.get_or_create(user=user)
 
-        token.token = auth_data['access_token']
-        token.save()
+        github.token = auth_data['access_token']
+        github.save()
 
         # Use Django's login() function to set up any necessary session crap
         if user.is_active:
             login(request, user)
 
-        # Proceed with the redirect to the home page. 
+        # Proceed with the redirect to the home page.
         # This is a RedirectView, after all
         return super(LoginStageTwoView, self).get(request, *args, **kwargs)
