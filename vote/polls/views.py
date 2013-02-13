@@ -49,12 +49,27 @@ def get_ballot(request, vote_id):  # for needy votes
 
 
 from vote.schulze import schulze
+import json
 
 
 # I'm a terrible person for putting this here
 def process_ballots(vote_id):
     vote = Vote.objects.get(pk=vote_id)
-    ballots = [x.data for x in Ballot.objects.filter(vote=vote)]
+    ballots = [json.loads(x.data) for x in Ballot.objects.filter(vote=vote)]
     vote.result = schulze(ballots)
     vote.save()
     return vote.result
+
+
+
+# click on link. link takes you to form.
+# form shows the vote, and the example ballot
+# instructs user to copy example ballot
+# manipulate order of entries so prefered items are further to the left
+# and paste fixed ballot into textbox
+# press submit
+# unique identifier generated, ballot stored, UserVoted generated
+# user is shown the ballot that was submitted, including identifier
+# user told that identifier is not linked to user by the system, and that
+# they need to copy it down right now if they want to audit later.
+# link provided to get back to votes page
