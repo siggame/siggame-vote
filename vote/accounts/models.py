@@ -6,6 +6,9 @@ from django.dispatch import receiver
 from os import urandom
 from hashlib import sha1
 import requests
+import logging
+
+logger = logging.getLogger(__name__)
 
 
 def generate_state():
@@ -40,4 +43,7 @@ class GitHubToken(models.Model):
 @receiver(user_logged_out)
 def delete_github_token(sender, request, user, **kwargs):
     """Deletes the token when the user logs out."""
-    GitHubToken.objects.get(user=user).delete()
+    try:
+        GitHubToken.objects.get(user=user).delete()
+    except GitHubToken.DoesNotExist:
+        logger.warning("No token to delete... that's weird.")
