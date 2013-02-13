@@ -9,7 +9,7 @@ from urllib import urlencode
 
 
 class LoginStageOneView(RedirectView):
-    permanent = True
+    permanent = False
 
     def get_redirect_url(self, **kwargs):
         # Start by redirecting the user to GitHub to sign in
