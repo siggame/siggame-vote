@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% load url from future %}
+
+{% block content %}
+<h1>{{ vote.name }}</h1>
+{{ vote.description }}<br>
+Opened: {{ vote.opens }}<br>
+Closed: {{ vote.closes }}<br>
+Method: {{ vote.method }}<br>
+Example Ballot: {{ vote.template }}<br>
+Result: {{ vote.result }}<br>
+<hr>
+<h2>Ballots</h2>
+<ul>
+{% for ballot in vote.ballot_set.all %}
+  <li>{{ ballot.identifier }} - {{ ballot.data }}</li>
+{% endfor %}
+</ul>
+<hr>
+{% endblock %}

@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+{% load url from future %}
+
+{% block content %}
+<h1>{{ vote.name }}</h1>
+{{ vote.description }}<br>
+Opens: {{ vote.opens }}<br>
+Closes: {{ vote.closes }}<br>
+Method: {{ vote.method }}<br>
+Example Ballot: {{ vote.template }}<br>
+{% endblock %}
