@@ -19,6 +19,11 @@ except ImportError:
         secret_settings.write("SECRET_KEY = '''%s'''\n" % secret_key)
     from secret_settings import *
 
+
+AUTHENTICATION_BACKENDS = (
+    'vote.accounts.backends.GitHubAuthBackend',
+)
+
 ADMINS = (
     # ('Your Name', 'your_email@example.com'),
 )

@@ -7,5 +7,5 @@ urlpatterns = patterns(
     '',
 
     url('^login/$', LoginStageOneView.as_view(), name="login1"),
-    url('^login/next/$', LoginStageTwoView.as_view(), name="login2"),
+    url('^login/next/', LoginStageTwoView.as_view(), name="login2"),
 )
