@@ -1,7 +1,7 @@
 from vote.settings import *
 from secret_settings import *
 
-SIDE_ID = 2
+SITE_ID = 2
 
 DATABASES = {
     'default': {
