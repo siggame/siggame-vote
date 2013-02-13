@@ -169,6 +169,7 @@ INSTALLED_APPS = (
     'crispy_forms',
 
     'vote.accounts',
+    'vote.polls',
 
     'django_extensions',
 )
