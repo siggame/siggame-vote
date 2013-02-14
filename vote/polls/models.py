@@ -103,7 +103,8 @@ class Vote(models.Model):
 
     def process_ballots(self):
         ballot_data = [json.loads(x.data) for x in self.ballot_set.all()]
-        self.result = schulze(ballot_data)
+        if ballot_data != []:
+            self.result = schulze(ballot_data)
         self.save()
         return self.result
 
