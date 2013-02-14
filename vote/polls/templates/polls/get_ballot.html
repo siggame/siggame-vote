@@ -1,18 +1,23 @@
 {% extends "base.html" %}
 {% load url from future %}
+{% load crispy_forms_tags %}
 
 {% block content %}
-<h1>{{ vote.name }}</h1>
-{{ vote.description }}<br>
-Closes: {{ vote.closes }}<br>
-Method: {{ vote.method }}<br>
-<hr>
-<form method="POST" action="{% url 'vote.polls.views.process_ballot' %}">
-Move things around so your prefered items are further to the left in this list.<br>
-Ballot:
-<textarea rows='1' cols='80' name='ballot'>{{ vote.template }}</textarea><br>
-{% csrf_token %}
-<input type='hidden' name='vote_id' value='{{ vote.pk }}' />
-<input type='submit' value='submit' />
-</form>
+  <h1>{{ vote.name }}</h1>
+  {{ vote.description }}<br>
+  Closes: {{ vote.closes }}<br>
+  Method: {{ vote.method }}<br>
+  <hr>
+
+  <form method="POST">
+    {% csrf_token %}
+
+{{ form|crispy }}    
+
+    Move things around so your prefered items are further to the left in this list.<br>
+    Ballot:
+    <!-- <textarea rows='1' cols='80' name='ballot'>{{ vote.template }}</textarea><br> -->
+    <!-- <input type='hidden' name='vote_id' value='{{ vote.pk }}' /> -->
+    <input type='submit' value='submit' />
+  </form>
 {% endblock %}

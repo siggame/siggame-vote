@@ -5,7 +5,7 @@
   <h2>These are open and need your input</h2>
   <ul>
   {% for vote in needy_votes %}
-    <li><a href="{% url 'vote.polls.views.get_ballot' vote_id=vote.id %}">
+    <li><a href="{% url 'submit_ballot' vote_id=vote.id %}">
       {{ vote.name }}</a> open until {{ vote.closes }}</li>
   {% endfor %}
   </ul>
@@ -13,7 +13,7 @@
   <h2>These are open but you already voted</h2>
   <ul>
   {% for vote in filled_votes %}
-    <li><a href="{% url 'vote.polls.views.view_vote_info' vote_id=vote.id  %}">
+    <li><a href="{% url 'detail_poll' vote_id=vote.id  %}">
       {{ vote.name }}</a> open until {{ vote.closes }}</li>
   {% endfor %}
   </ul>
@@ -21,7 +21,7 @@
   <h2>Upcoming</h2>
   <ul>
   {% for vote in upcoming_votes %}
-    <li><a href="{% url 'vote.polls.views.view_vote_info' vote_id=vote.id  %}">
+    <li><a href="{% url 'detail_poll' vote_id=vote.id  %}">
         {{ vote.name }}</a> - {{ vote.opens }} until {{ vote.closes }}</li>
   {% endfor %}
   </ul>
@@ -29,7 +29,7 @@
   <h2>Completed</h2>
   <ul>
   {% for vote in closed_votes %}
-    <li><a href="{% url 'vote.polls.views.view_vote_results' vote_id=vote.id  %}">
+    <li><a href="{% url 'detail_poll_results' vote_id=vote.id  %}">
       {{ vote.name }}</a> closed {{ vote.closes }}</li>
   {% endfor %}</ul>
 {% endblock %}

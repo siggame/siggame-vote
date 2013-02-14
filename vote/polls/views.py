@@ -1,52 +1,79 @@
 from django.views.generic import TemplateView
+from django.views.generic.detail import DetailView
+from django.views.generic.edit import CreateView
+from django.shortcuts import render_to_response, get_object_or_404
+from django.http import Http404
+from django.contrib.auth.decorators import login_required
+from django.utils.decorators import method_decorator
+
+from .models import Vote, Ballot
+from .forms import BallotForm
 
 
 class ListPollsView(TemplateView):
     template_name = "polls/list_polls.html"
 
+    @method_decorator(login_required)
+    def dispatch(self, *args, **kwargs):
+        return super(ListPollsView, self).dispatch(*args, **kwargs)
 
-from datetime import datetime
-from django.shortcuts import render_to_response, get_object_or_404
-from django.http import HttpResponse
-from django.contrib.auth.decorators import login_required
+    def get_context_data(self, **kwargs):
+        context = super(ListPollsView, self).get_context_data(**kwargs)
 
-from .models import Vote, Ballot, UserVoted
+        context['closed_votes'] = Vote.objects.closed_now()
+        context['upcoming_votes'] = Vote.objects.upcoming()
+        context['needy_votes'] = Vote.objects.open_to_user(self.request.user)
+        context['filled_votes'] = Vote.objects.closed_to_user(self.request.user)
 
-
-@login_required
-def list_polls(request):
-    now = datetime.now()
-    closed_votes = Vote.objects.filter(closes__lte=now)
-    upcoming_votes = Vote.objects.filter(opens__gt=now)
-    open_votes = Vote.objects.filter(opens__lte=now).filter(closes__gt=now)
-
-    # this is terrible, how do I filtered django?
-    open_votes = set(open_votes)
-    my_vote_things = UserVoted.objects.filter(user=request.user)
-    my_votes = set([x.vote for x in my_vote_things])
-    needy_votes = open_votes - my_votes
-    filled_votes = open_votes & my_votes
-
-    payload = {'needy_votes': needy_votes,
-               'filled_votes': filled_votes,
-               'upcoming_votes': upcoming_votes,
-               'closed_votes': closed_votes}
-    return render_to_response("polls/list_polls.html", payload)
+        return context
 
 
-def view_vote_info(request, vote_id):  # for upcoming and filled votes
-    vote = get_object_or_404(Vote, pk=vote_id)
-    return render_to_response('polls/view_poll_info.html', {'vote': vote})
+class VoteDetailView(DetailView):
+    pk_url_kwarg = 'vote_id'
+    model = Vote
+    template_name = 'polls/view_poll_info.html'
+
+    @method_decorator(login_required)
+    def dispatch(self, *args, **kwargs):
+        return super(VoteDetailView, self).dispatch(*args, **kwargs)
 
 
-def view_vote_results(request, vote_id):  # for closed votes
-    vote = get_object_or_404(Vote, pk=vote_id)
-    return render_to_response('polls/view_poll_results.html', {'vote': vote})
+class VoteResultsView(VoteDetailView):
+    template_name = 'polls/view_poll_results.html'
 
 
-def get_ballot(request, vote_id):  # for needy votes
-    return HttpResponse("cute under construction gif goes here!")
+class CreateBallotView(CreateView):
+    model = Ballot
+    template_name = "polls/get_ballot.html"
+    form_class = BallotForm
 
+    @method_decorator(login_required)
+    def dispatch(self, *args, **kwargs):
+        try:
+            self.vote = Vote.objects.get(pk=kwargs['vote_id'])
+        except Vote.DoesNotExist:
+            raise Http404("Derp. No vote object.")
+        except KeyError:
+            raise Http404("No vote_id provided")
+
+        request = args[0]
+        if not self.vote.can_user_vote(request.user):
+            raise Http404("User can't vote!")
+
+        return super(CreateBallotView, self).dispatch(*args, **kwargs)
+
+    def get_success_url(self):
+        return "/"
+
+    def get_form_kwargs(self):
+        form_kwargs = super(CreateBallotView, self).get_form_kwargs()
+        form_kwargs['instance'] = Ballot(vote=self.vote)
+        return form_kwargs
+
+    def form_valid(self, form):
+        redirect = super(CreateBallotView, self).form_valid(form)
+        self.vote.already_voted.add(self.request.user)
+        return redirect
 
 from vote.schulze import schulze
 import json

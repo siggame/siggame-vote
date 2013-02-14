@@ -1,14 +1,17 @@
 from django.conf.urls.defaults import patterns, url, include
 
-from .views import ListPollsView
+from .views import ListPollsView, VoteDetailView, VoteResultsView, CreateBallotView
 
 
 urlpatterns = patterns(
     '',
 
-#    url('^$', ListPollsView.as_view(), name="list_polls"),
-    url(r'^$', 'vote.polls.views.list_polls'),
-    url(r'^vote_info/(?P<vote_id>\d+)$', 'vote.polls.views.view_vote_info'),
-    url(r'^vote_results/(?P<vote_id>\d+)$', 'vote.polls.views.view_vote_results'),
-    url(r'^get_ballot/(?P<vote_id>\d+)$', 'vote.polls.views.get_ballot'),
+    url('^$', ListPollsView.as_view(),
+        name="list_polls"),
+    url(r'^vote_info/(?P<vote_id>\d+)$', VoteDetailView.as_view(),
+        name='detail_poll'),
+    url(r'^vote_results/(?P<vote_id>\d+)$', VoteResultsView.as_view(),
+        name='detail_poll_results'),
+    url(r'^get_ballot/(?P<vote_id>\d+)$', CreateBallotView.as_view(),
+        name='submit_ballot'),
 )
