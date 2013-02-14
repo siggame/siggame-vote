@@ -66,7 +66,8 @@ class CreateBallotView(CreateView):
 
         request = args[0]
         if not self.vote.can_user_vote(request.user):
-            messages.info("You cannot submit a ballot for that vote at this time")
+            msg = "You cannot submit a ballot for that vote at this time"
+            messages.info(request, msg)
             raise Http404("User can't vote!")
 
         return super(CreateBallotView, self).dispatch(*args, **kwargs)
@@ -87,7 +88,7 @@ class CreateBallotView(CreateView):
     def form_valid(self, form):
         redirect = super(CreateBallotView, self).form_valid(form)
         self.vote.already_voted.add(self.request.user)
-        messages.success("Ballot successfully submitted!")
+        messages.success(self.request, "Ballot successfully submitted!")
         return redirect
 
 
