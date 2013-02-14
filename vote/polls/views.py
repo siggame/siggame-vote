@@ -10,6 +10,8 @@ from django.contrib import messages
 from .models import Vote, Ballot
 from .forms import BallotForm
 
+from datetime import datetime
+
 
 class ListPollsView(TemplateView):
     template_name = "polls/list_polls.html"
@@ -44,6 +46,14 @@ class VoteResultsView(VoteDetailView):
 
     def render_to_response(self, context, **kwargs):
         vote = self.get_object()
+        now = datetime.now()
+        if now < vote.closes:
+            if self.request.user.is_staff:
+                messages.info(self.request, "Vote is not over, but you are staff.")
+            else:
+                messages.info(self.request, "Vote is not over, yet.")
+                raise Http404("Vote's not over")
+
         process = self.request.GET.get('process', vote.needs_processed())
         if process and self.request.user.has_perm('vote.can_process_ballots'):
             vote.process_ballots()
