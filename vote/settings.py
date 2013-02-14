@@ -31,7 +31,7 @@ AUTHENTICATION_BACKENDS = (
     'vote.accounts.backends.GitHubAuthBackend',
 )
 
-LOGIN_URL = '/vote/accounts/login/'
+LOGIN_URL = '/accounts/login/'
 
 ADMINS = (
     # ('Your Name', 'your_email@example.com'),
