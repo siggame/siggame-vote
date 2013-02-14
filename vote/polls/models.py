@@ -3,6 +3,8 @@ from django.contrib.auth.models import User
 
 from vote.schulze import schulze
 
+from os import urandom
+from hashlib import sha1
 from datetime import datetime
 import json
 
@@ -54,7 +56,6 @@ class Vote(models.Model):
         return self.result is None
 
     def can_user_vote(self, user):
-        print self.already_voted.all()
         return not self.already_voted.filter(pk=user.pk).exists()
 
     def process_ballots(self):
@@ -71,3 +72,8 @@ class Ballot(models.Model):
 
     def __unicode__(self):
         return self.data
+
+    def save(self, *args, **kwargs):
+        if not self.identifier:
+            self.identifier = sha1(urandom(100)).hexdigest()
+        return super(Ballot, self).save(*args, **kwargs)
