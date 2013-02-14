@@ -2,6 +2,7 @@ from django.db import models
 from django.contrib.auth.models import User
 
 from vote.schulze import schulze
+from .validators import validate_ballot
 
 from os import urandom
 from hashlib import sha1
@@ -42,7 +43,8 @@ class Vote(models.Model):
     created = models.DateTimeField(auto_now_add=True)
     opens = models.DateTimeField()
     closes = models.DateTimeField()
-    template = models.TextField(blank=True)
+    template = models.TextField(blank=True,
+                                validators=[validate_ballot])
     method = models.TextField(blank=True)
     result = models.TextField(blank=True)
 

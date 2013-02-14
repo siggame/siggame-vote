@@ -4,19 +4,7 @@ from crispy_forms.layout import Layout, Field, Submit, Button
 from crispy_forms.bootstrap import FormActions
 
 from .models import Ballot
-
-from jsonschema import validate, ValidationError
-import json
-
-
-ballotschema = {
-    "type": "array",
-    "items": {
-        "type": "integer"
-    },
-    "minItems": 1,
-    "uniqueItems": True
-}
+from .validators import validate_ballot
 
 
 class BallotForm(forms.ModelForm):
@@ -38,14 +26,8 @@ class BallotForm(forms.ModelForm):
         )
         super(BallotForm, self).__init__(*args, **kwargs)
 
-    def clean_data(self):
-        data = self.cleaned_data['data']
-        try:
-            obj = json.loads(data)
-            validate(obj, ballotschema)
-        except ValueError:
-            raise forms.ValidationError("Could not decode JSON from data")
-        except ValidationError:
-            raise forms.ValidationError("Bad data.")
-
-        return data
+    def clean(self):
+        cleaned_data = super(BallotForm, self).clean()
+        data = cleaned_data['data']
+        validate_ballot(data)
+        return cleaned_data
