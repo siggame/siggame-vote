@@ -9,15 +9,28 @@
   Method: {{ vote.method }}<br>
   <hr>
 
+  <div id="template" style="display:none;">
+    {{ vote.template }}
+  </div>    
+  <ul id="sortable">    
+
+  </ul>
+
   <form method="POST">
-    {% csrf_token %}
-
-{{ form|crispy }}    
-
-    Move things around so your prefered items are further to the left in this list.<br>
-    Ballot:
-    <!-- <textarea rows='1' cols='80' name='ballot'>{{ vote.template }}</textarea><br> -->
-    <!-- <input type='hidden' name='vote_id' value='{{ vote.pk }}' /> -->
-    <input type='submit' value='submit' />
+    {% crispy form %}
   </form>
+{% endblock %}
+
+{% block link %}
+  <link href="{{ STATIC_URL}}css/ui-lightness/jquery-ui-1.10.0.custom.min.css" rel="stylesheet">
+
+<style>
+#sortable { list-style-type: none; margin: 0; padding: 0; width: 60%; }
+  #sortable li { margin: 0 3px 3px 3px; padding: 0.4em; padding-left: 1.5em; font-size: 1.4em; height: 18px; }
+  #sortable li span { position: absolute; margin-left: -1.3em; }
+</style>
+{% endblock %}
+
+{% block script %}
+  <script src="{{ STATIC_URL }}js/votelist.js"></script>
 {% endblock %}

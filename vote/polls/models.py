@@ -43,6 +43,7 @@ class Vote(models.Model):
         return self.name
 
     def can_user_vote(self, user):
+        print self.already_voted.all()
         return not self.already_voted.filter(pk=user.pk).exists()
 
 

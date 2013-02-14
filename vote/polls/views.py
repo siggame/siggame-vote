@@ -65,6 +65,11 @@ class CreateBallotView(CreateView):
     def get_success_url(self):
         return "/"
 
+    def get_context_data(self, **kwargs):
+        context = super(CreateBallotView, self).get_context_data(**kwargs)
+        context['vote'] = self.vote
+        return context
+
     def get_form_kwargs(self):
         form_kwargs = super(CreateBallotView, self).get_form_kwargs()
         form_kwargs['instance'] = Ballot(vote=self.vote)
