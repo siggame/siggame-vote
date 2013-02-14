@@ -2,12 +2,27 @@ from django.db import models
 from django.contrib.auth.models import User
 
 from vote.schulze import schulze
+from vote.accounts.models import GitHubToken
 from .validators import validate_ballot
 
 from os import urandom
 from hashlib import sha1
 from datetime import datetime
+import requests
+import logging
 import json
+
+logger = logging.getLogger(__name__)
+
+
+id_help = """You need to be an owner of the SIG-Game organization. Go
+to https://github.com/organizations/siggame/teams and choose the team
+you want to grant permission to. From the URL, grab the id number for
+the team. The URL should look like this:
+
+https://github.com/organizations/siggame/teams/:id
+"""
+
 
 
 class VoteManager(models.Manager):
@@ -40,6 +55,10 @@ class Vote(models.Model):
 
     name = models.CharField(max_length=100)
     description = models.TextField(blank=True)
+
+    team_id = models.PositiveIntegerField(help_text=id_help,
+                                          null=True)
+
     created = models.DateTimeField(auto_now_add=True)
     opens = models.DateTimeField()
     closes = models.DateTimeField()
@@ -58,7 +77,19 @@ class Vote(models.Model):
         return self.result is None
 
     def can_user_vote(self, user):
-        return not self.already_voted.filter(pk=user.pk).exists()
+        if self.already_voted.filter(pk=user.pk).exists():
+            return False
+        try:
+            endpoint = "https://api.github.com/teams/%d/members" % self.team_id
+            params = {'access_token': user.githubtoken.token}
+            response = requests.get(endpoint, params=params)
+            if response.status_code != 200:
+                return False
+        except GitHubToken.DoesNotExist:
+            logger.info("User %s doesn't have GitHub token", user.username)
+        except TypeError:
+            logger.info("GitHub team not set for %s", str(self))
+        return True
 
     def process_ballots(self):
         ballot_data = [json.loads(x.data) for x in self.ballot_set.all()]
