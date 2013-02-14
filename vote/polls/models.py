@@ -37,12 +37,16 @@ class VoteManager(models.Manager):
         return self.filter(opens__lte=now, closes__gt=now)
 
     def open_to_user(self, user):
+        """Votes that are open and user needs to vote"""
         now = datetime.now()
         return self.exclude(already_voted=user).filter(opens__lte=now,
                                                        closes__gt=now)
 
     def closed_to_user(self, user):
-        return self.filter(already_voted=user)
+        """Votes that are open, but this user already voted"""
+        now = datetime.now()
+        return self.filter(already_voted=user).filter(opens__lte=now,
+                                                       closes__gt=now)
 
 
 class Vote(models.Model):
