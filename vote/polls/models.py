@@ -1,7 +1,10 @@
 from django.db import models
 from django.contrib.auth.models import User
 
+from vote.schulze import schulze
+
 from datetime import datetime
+import json
 
 
 class VoteManager(models.Manager):
@@ -25,6 +28,11 @@ class VoteManager(models.Manager):
 
 
 class Vote(models.Model):
+    class Meta:
+        permissions = (
+            ("can_process_ballots", "Can process ballots"),
+        )
+
     objects = VoteManager()
 
     name = models.CharField(max_length=100)
@@ -42,9 +50,18 @@ class Vote(models.Model):
     def __unicode__(self):
         return self.name
 
+    def needs_processed(self):
+        return self.result is None
+
     def can_user_vote(self, user):
         print self.already_voted.all()
         return not self.already_voted.filter(pk=user.pk).exists()
+
+    def process_ballots(self):
+        ballot_data = [json.loads(x.data) for x in self.ballot_set.all()]
+        self.result = schulze(ballot_data)
+        self.save()
+        return self.result
 
 
 class Ballot(models.Model):

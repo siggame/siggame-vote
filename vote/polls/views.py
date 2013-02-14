@@ -41,6 +41,13 @@ class VoteDetailView(DetailView):
 class VoteResultsView(VoteDetailView):
     template_name = 'polls/view_poll_results.html'
 
+    def render_to_response(self, context, **kwargs):
+        vote = self.get_object()
+        process = self.request.GET.get('process', vote.needs_processed())
+        if process and request.user.has_perm('vote.can_process_ballots'):
+            vote.process_ballots()
+        return super(VoteResultsView, self).render_to_response(context, **kwargs)
+
 
 class CreateBallotView(CreateView):
     model = Ballot
@@ -80,17 +87,6 @@ class CreateBallotView(CreateView):
         self.vote.already_voted.add(self.request.user)
         return redirect
 
-from vote.schulze import schulze
-import json
-
-
-# I'm a terrible person for putting this here
-def process_ballots(vote_id):
-    vote = Vote.objects.get(pk=vote_id)
-    ballots = [json.loads(x.data) for x in Ballot.objects.filter(vote=vote)]
-    vote.result = schulze(ballots)
-    vote.save()
-    return vote.result
 
 
 
