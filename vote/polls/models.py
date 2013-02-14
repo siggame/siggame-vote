@@ -84,6 +84,9 @@ class Vote(models.Model):
     def can_user_vote(self, user):
         if self.already_voted.filter(pk=user.pk).exists():
             return False
+        now = datetime.now()
+        if self.opens > now or self.closes < now:
+            return False
         try:
             endpoint = "https://api.github.com/teams/%d/members" % self.team_id
             params = {'access_token': user.githubtoken.token}
