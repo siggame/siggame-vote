@@ -1,12 +1,9 @@
-<html>
-<head>
-<title>Uh oh! Server error. (http 500)</title>
-</head>
-<body>
-<h1>Uh oh! Server error. (http 500)</h1>
+{% extends "base.html" %}
+{% load url from future%}
 
-<address>
-<a href="mailto:michaelwisely@Dante.local">Michael Wisely</a>
-</address>
-</body>
-</html>
+
+{% block page-header %}
+<div class="page-header">
+  <h1>Uh oh! Something broke. <small>Go fix it, you.</small></h1>
+</div>  
+{% endblock %}
