@@ -1,11 +1,28 @@
-{% extends "base.html" %}
+{% extends "polls/show_ballot.html" %}
 {% load url from future %}
 
+{% block page-header %}
+  <div class="page-header">
+    <h1>{{ vote.name }}</h1>
+  </div>
+{% endblock%}
+
 {% block content %}
-<h1>{{ vote.name }}</h1>
-{{ vote.description }}<br>
-Opens: {{ vote.opens }}<br>
-Closes: {{ vote.closes }}<br>
-Method: {{ vote.method }}<br>
-Example Ballot: {{ vote.template }}<br>
+  {{ vote.description }}<br>
+  Opens: {{ vote.opens }}<br>
+  Closes: {{ vote.closes }}<br>
+  Method: {{ vote.method }}<br>
+
+  <hr>  
+
+  <div class="well">
+    <h2>Example Ballot</h2>
+    <div id="ballot_list">
+    </div>
+    <div id="ballot_data" style="display:none;">
+      {{ vote.template }}
+    </div>
+  </div>
 {% endblock %}
+
+{# Scripts and style inherited from show_ballot.html #}

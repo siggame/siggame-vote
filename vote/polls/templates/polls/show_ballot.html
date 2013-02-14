@@ -1,18 +1,65 @@
 {% extends "base.html" %}
 {% load url from future %}
 
-{% block content %}
-<h1>Your Identifier -> {{ ballot.identifier }}</h1>
-This is your unique identifier for this ballot. Write it down. When the vote
-is closed, you will be able to see all the ballots cast. Make sure that your
-unique identifier is in that list! The system knows you voted, but it doesn't
-know which ballot is yours.<br>
-{{ ballot.data}}<br>
-<a href = "{% url 'vote.polls.views.list_polls' %}">Back to List</a>
-<hr>
-<h1>{{ vote.name }}</h1>
-{{ vote.description }}<br>
-Closes: {{ vote.closes }}<br>
-Method: {{ vote.method }}<br>
+{% block page-header %}
+  <div class="page-header">
+    <h1>Thanks for voting!</h1>
+  </div>
+{% endblock%}
 
+{% block content %}
+  <h2>{{ ballot.vote.name }}</h2>
+  {{ ballot.vote.description }}<br>
+  Closes: {{ ballot.vote.closes }}<br>
+  Method: {{ ballot.vote.method }}<br>
+
+  <hr>
+
+  <div class="well">
+    <h2>Your ballot</h2>
+    <div id="ballot_list">
+    </div>
+    <div id="ballot_data" style="display:none;">
+      {{ ballot.data}}
+    </div>
+  </div>
+
+  <hr>
+
+  <div class="row">
+    <div class="span6">
+      <h2>Your ballot identifier:</h2>
+      <p>
+        {{ ballot.identifier }}
+      </p>
+    </div>
+    <div class="span6">
+      <p>
+        <span class="label label-info">Before you go...</span> This is
+        your unique identifier for this ballot. <b>Write it down.</b>
+        When the vote is closed, you will be able to see all the
+        ballots cast. Make sure that your unique identifier is in that
+        list!  The system knows you voted, but it doesn't know which
+        ballot is yours.
+      </p>
+    </div>
+  </div>
+
+
+  <a href="{% url 'list_polls' %}" class="btn-primary btn">
+    Back to List
+  </a>
+  <hr>
+{% endblock %}
+
+{% block link %}
+<style>
+  #ballot_list { list-style-type: none; margin: 0; padding: 0; width: 60%; }
+  #ballot_list li { margin: 0 3px 3px 3px; padding: 0.4em; padding-left: 1.5em; font-size: 1.4em; height: 18px; }
+  #ballot_list li span { position: absolute; margin-left: -1.3em; }
+</style>
+{% endblock %}
+
+{% block script %}
+  <script src="{{ STATIC_URL }}js/fixballot.js"></script>
 {% endblock %}

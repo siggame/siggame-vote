@@ -1,6 +1,7 @@
 from django.conf.urls.defaults import patterns, url, include
 
-from .views import ListPollsView, VoteDetailView, VoteResultsView, CreateBallotView
+from .views import (ListPollsView, VoteDetailView, VoteResultsView,
+                    CreateBallotView, BallotDetailView)
 
 
 urlpatterns = patterns(
@@ -14,4 +15,6 @@ urlpatterns = patterns(
         name='detail_poll_results'),
     url(r'^get_ballot/(?P<vote_id>\d+)$', CreateBallotView.as_view(),
         name='submit_ballot'),
+    url(r'^ballot/(?P<ballot_id>[a-f0-9]{40})$', BallotDetailView.as_view(),
+        name='detail_ballot'),
 )

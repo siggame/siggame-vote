@@ -1,7 +1,7 @@
 from django.views.generic import TemplateView
 from django.views.generic.detail import DetailView
 from django.views.generic.edit import CreateView
-from django.shortcuts import render_to_response, get_object_or_404
+from django.core.urlresolvers import reverse
 from django.http import Http404
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
@@ -70,7 +70,7 @@ class CreateBallotView(CreateView):
         return super(CreateBallotView, self).dispatch(*args, **kwargs)
 
     def get_success_url(self):
-        return "/"
+        return reverse("detail_ballot", kwargs={'ballot_id':self.object.pk})
 
     def get_context_data(self, **kwargs):
         context = super(CreateBallotView, self).get_context_data(**kwargs)
@@ -87,6 +87,15 @@ class CreateBallotView(CreateView):
         self.vote.already_voted.add(self.request.user)
         return redirect
 
+
+class BallotDetailView(DetailView):
+    pk_url_kwarg = 'ballot_id'
+    model = Ballot
+    template_name = 'polls/show_ballot.html'
+
+    @method_decorator(login_required)
+    def dispatch(self, *args, **kwargs):
+        return super(BallotDetailView, self).dispatch(*args, **kwargs)
 
 
 
