@@ -10,8 +10,8 @@ urlpatterns = patterns(
     '',
     url(r'^', include('vote.polls.urls')),
     url(r'^accounts/', include('vote.accounts.urls')),
-    url(r'^vote/admin/', include(admin.site.urls)),
-    url(r'^vote/admin_tools/', include('admin_tools.urls')),
+    url(r'^admin/', include(admin.site.urls)),
+    url(r'^admin_tools/', include('admin_tools.urls')),
 )
 
 
