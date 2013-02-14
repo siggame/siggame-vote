@@ -5,6 +5,7 @@ from django.core.urlresolvers import reverse
 from django.http import Http404
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
+from django.contrib import messages
 
 from .models import Vote, Ballot
 from .forms import BallotForm
@@ -65,6 +66,7 @@ class CreateBallotView(CreateView):
 
         request = args[0]
         if not self.vote.can_user_vote(request.user):
+            messages.info("You cannot submit a ballot for that vote at this time")
             raise Http404("User can't vote!")
 
         return super(CreateBallotView, self).dispatch(*args, **kwargs)
@@ -85,6 +87,7 @@ class CreateBallotView(CreateView):
     def form_valid(self, form):
         redirect = super(CreateBallotView, self).form_valid(form)
         self.vote.already_voted.add(self.request.user)
+        messages.success("Ballot successfully submitted!")
         return redirect
 
 
