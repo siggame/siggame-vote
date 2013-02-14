@@ -7,7 +7,7 @@
     name: MegaMinerAI 9 Game Concepts
     opens: 2011-01-17 12:00:00
     result: ''
-    template: ''
+    template: '["space", "b", "c", "d"]'
   model: polls.vote
   pk: 1
 
@@ -20,7 +20,7 @@
     name: MegaMinerAI 10 Game Concepts
     opens: 2012-09-17 12:00:00
     result: ''
-    template: ''
+    template: '["a", "b", "c", "galapagos"]'
   model: polls.vote
   pk: 2
 
@@ -33,7 +33,7 @@
     name: MegaMinerAI 11 Game Concepts
     opens: 2013-02-14 12:00:00
     result: ''
-    template: ''
+    template: '["a", "b", "reef", "d"]'
   model: polls.vote
   pk: 3
 
@@ -46,6 +46,6 @@
     name: Votey McVote
     opens: 2013-02-01 12:00:00
     result: ''
-    template: ''
+    template: '["a", "derp", "c", "d"]'
   model: polls.vote
   pk: 4
