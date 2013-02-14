@@ -45,7 +45,7 @@ class VoteResultsView(VoteDetailView):
     def render_to_response(self, context, **kwargs):
         vote = self.get_object()
         process = self.request.GET.get('process', vote.needs_processed())
-        if process and request.user.has_perm('vote.can_process_ballots'):
+        if process and self.request.user.has_perm('vote.can_process_ballots'):
             vote.process_ballots()
         return super(VoteResultsView, self).render_to_response(context, **kwargs)
 
