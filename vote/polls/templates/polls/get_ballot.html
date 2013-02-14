@@ -9,12 +9,15 @@
   Method: {{ vote.method }}<br>
   <hr>
 
+
+  <p class="muted">The top item should be your most favorite.</p>
   <div id="template" style="display:none;">
     {{ vote.template }}
   </div>    
   <ul id="sortable">    
 
   </ul>
+  <p class="muted">The bottom item should be your least favorite.</p>
 
   <form method="POST">
     {% crispy form %}
