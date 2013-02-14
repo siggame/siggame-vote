@@ -19,6 +19,12 @@ except ImportError:
         secret_settings.write("SECRET_KEY = '''%s'''\n" % secret_key)
     from secret_settings import *
 
+FCGI_OPTIONS = {
+    'method': 'threaded',
+    'host': '127.0.0.1',
+    'port': '9001',
+    'daemonize': 'false',
+}
 
 AUTHENTICATION_BACKENDS = (
     'django.contrib.auth.backends.ModelBackend',
