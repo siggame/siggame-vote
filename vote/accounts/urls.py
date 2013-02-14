@@ -9,6 +9,6 @@ urlpatterns = patterns(
     url('^login/$', LoginStageOneView.as_view(), name="login"),
     url('^login/next/', LoginStageTwoView.as_view(), name="login2"),
 
-    url('^logout/$', logout, {"next_page": "http://megaminerai.com"}, name="logout"),
+    url('^logout/$', logout, {"next_page": "http://siggame.github.com"}, name="logout"),
 
 )
