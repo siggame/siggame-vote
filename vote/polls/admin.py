@@ -8,6 +8,7 @@ class InlineBallot(admin.TabularInline):
 
 class VoteAdmin(admin.ModelAdmin):
     inlines = (InlineBallot, )
+    filter_horizontal = ('already_voted',)
 
 
 admin.site.register(Vote, VoteAdmin)
