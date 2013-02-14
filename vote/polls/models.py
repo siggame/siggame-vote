@@ -83,6 +83,8 @@ class Vote(models.Model):
             endpoint = "https://api.github.com/teams/%d/members" % self.team_id
             params = {'access_token': user.githubtoken.token}
             response = requests.get(endpoint, params=params)
+            logger.info("Checking access... GitHub reponse: HTTP %s",
+                        response.status_code)
             if response.status_code != 200:
                 return False
         except GitHubToken.DoesNotExist:
