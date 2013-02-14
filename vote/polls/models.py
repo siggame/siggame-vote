@@ -78,7 +78,8 @@ class Vote(models.Model):
         return self.name
 
     def needs_processed(self):
-        return self.result is None
+        # Returns False if self.result is None or ''
+        return bool(self.result)
 
     def can_user_vote(self, user):
         if self.already_voted.filter(pk=user.pk).exists():
