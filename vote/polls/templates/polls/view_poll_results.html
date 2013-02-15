@@ -8,7 +8,7 @@
   Closed: {{ vote.closes }}<br>
   Method: {{ vote.method }}<br>
   Example Ballot: {{ vote.template }}<br>
-  Result: {{ vote.result }}<br>
+  Result: <span class="label label-success">{{ vote.result }}</span><br>
   <hr>
   <h2>Ballots [{{ vote.ballot_set.all.count }}]</h2>
   <ul>
