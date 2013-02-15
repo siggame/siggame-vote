@@ -113,6 +113,8 @@ class Vote(models.Model):
 
 
 class Ballot(models.Model):
+    class Meta:
+        ordering = ['?']
     identifier = models.CharField(max_length=40, primary_key=True)
     vote = models.ForeignKey(Vote)
     data = models.TextField()
