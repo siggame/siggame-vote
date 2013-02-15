@@ -11,6 +11,14 @@ from .models import Vote, Ballot
 from .forms import BallotForm
 
 from datetime import datetime
+import random
+import json
+
+
+def shufflejson(x):
+    payload = json.loads(x)
+    random.shuffle(payload)
+    return json.dumps(payload)
 
 
 class ListPollsView(TemplateView):
@@ -72,6 +80,7 @@ class CreateBallotView(CreateView):
     def dispatch(self, *args, **kwargs):
         try:
             self.vote = Vote.objects.get(pk=kwargs['vote_id'])
+            self.vote.template = shufflejson(self.vote.template)
         except Vote.DoesNotExist:
             raise Http404("Derp. No vote object.")
         except KeyError:
