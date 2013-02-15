@@ -81,12 +81,7 @@ class Vote(models.Model):
         # Returns True if self.result is None or ''
         return not bool(self.result)
 
-    def can_user_vote(self, user):
-        if self.already_voted.filter(pk=user.pk).exists():
-            return False
-        now = datetime.now()
-        if self.opens > now or self.closes < now:
-            return False
+    def can_user_view(self, user):
         try:
             endpoint = "https://api.github.com/teams/%d/members" % self.team_id
             params = {'access_token': user.githubtoken.token}
@@ -100,6 +95,14 @@ class Vote(models.Model):
         except TypeError:
             logger.info("GitHub team not set for %s", str(self))
         return True
+
+    def can_user_vote(self, user):
+        if self.already_voted.filter(pk=user.pk).exists():
+            return False
+        now = datetime.now()
+        if self.opens > now or self.closes < now:
+            return False
+        return self.can_user_view(user)
 
     def process_ballots(self):
         ballot_data = [json.loads(x.data) for x in self.ballot_set.all()]
