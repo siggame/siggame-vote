@@ -46,6 +46,9 @@ class VoteResultsView(VoteDetailView):
 
     def render_to_response(self, context, **kwargs):
         vote = self.get_object()
+        if not vote.can_user_view(self.request.user):
+            messages.info(self.request, "You don't have access to those results.")
+            raise Http404("User doesn't have access to results")
         now = datetime.now()
         if now < vote.closes:
             if self.request.user.is_staff:
