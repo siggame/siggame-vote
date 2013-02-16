@@ -3,10 +3,9 @@ from django.contrib.auth.models import User
 
 from vote.schulze import schulze
 from vote.accounts.models import GitHubToken
+from vote.words.models import Word
 from .validators import validate_ballot
 
-from os import urandom
-from hashlib import sha1
 from datetime import datetime
 import requests
 import logging
@@ -22,7 +21,6 @@ the team. The URL should look like this:
 
 https://github.com/organizations/siggame/teams/:id
 """
-
 
 
 class VoteManager(models.Manager):
@@ -124,5 +122,5 @@ class Ballot(models.Model):
 
     def save(self, *args, **kwargs):
         if not self.identifier:
-            self.identifier = sha1(urandom(100)).hexdigest()
+            self.identifier = Word.objects.xkcd_pw(4)
         return super(Ballot, self).save(*args, **kwargs)
