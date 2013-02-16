@@ -15,10 +15,11 @@ def load_words(filename):
     i = 0
     with open(filename, 'r') as f:
         for line in f.readlines():
-            word = line.strip().replace("'", "").title()
+            word = line.strip().replace("'", "").replace("-", "").title()
             if len(word) > 3 and len(word) < 10:
                 try:
-                    Word.objects.create(data=word)
+                    w = Word(data=word)
+                    w.save()
                     i += 1
                 except:
                     pass
