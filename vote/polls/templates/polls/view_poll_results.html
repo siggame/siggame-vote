@@ -17,7 +17,7 @@
     {% endfor %}
   </ul>
   <hr>
-  <h2>Voted (in order of user creation in the database)</h2>
+  <h2>Voted [{{ vote.already_voted.all.count }}]</h2>
   <ul>
     {% for voter in vote.already_voted.all %}
       <li>{{ voter.username }}
