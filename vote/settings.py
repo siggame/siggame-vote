@@ -178,6 +178,7 @@ INSTALLED_APPS = (
 
     'vote.accounts',
     'vote.polls',
+    'vote.words',
 
     'django_extensions',
 )
