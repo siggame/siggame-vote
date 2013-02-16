@@ -95,7 +95,7 @@ class CreateBallotView(CreateView):
         return super(CreateBallotView, self).dispatch(*args, **kwargs)
 
     def get_success_url(self):
-        return reverse("detail_ballot", kwargs={'ballot_id':self.object.pk})
+        return reverse("detail_ballot", kwargs={'ballot_id': self.object.pk})
 
     def get_context_data(self, **kwargs):
         context = super(CreateBallotView, self).get_context_data(**kwargs)
@@ -122,17 +122,3 @@ class BallotDetailView(DetailView):
     @method_decorator(login_required)
     def dispatch(self, *args, **kwargs):
         return super(BallotDetailView, self).dispatch(*args, **kwargs)
-
-
-
-# click on link. link takes you to form.
-# form shows the vote, and the example ballot
-# instructs user to copy example ballot
-# manipulate order of entries so prefered items are further to the left
-# and paste fixed ballot into textbox
-# press submit
-# unique identifier generated, ballot stored, UserVoted generated
-# user is shown the ballot that was submitted, including identifier
-# user told that identifier is not linked to user by the system, and that
-# they need to copy it down right now if they want to audit later.
-# link provided to get back to votes page
