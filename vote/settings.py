@@ -26,6 +26,8 @@ FCGI_OPTIONS = {
     'daemonize': 'false',
 }
 
+CRISPY_TEMPLATE_PACK = 'bootstrap'
+
 AUTHENTICATION_BACKENDS = (
     'django.contrib.auth.backends.ModelBackend',
     'vote.accounts.backends.GitHubAuthBackend',
