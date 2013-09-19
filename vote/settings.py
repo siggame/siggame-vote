@@ -163,6 +163,8 @@ INSTALLED_APPS = (
     'admin_tools.menu',
     'admin_tools.dashboard',
 
+    'gunicorn',
+
     'django.contrib.auth',
     'django.contrib.admin',
     'django.contrib.admindocs',
