@@ -4,42 +4,34 @@ Vote
 A stupid web app to allow SIG-Game devs to vote using GitHub's OAUTH
 stuff.
 
+Deployment Reminders
+--------------------
 
-Wisely's Thoughts.
-------------------
+If you're an idiot like Wisely, you're going to need to remember to 
+check the following:
 
-From what I can tell, it's not possible for a user to see what teams
-they're on. It's the responsibility of the Organization Owners to see
-place users on teams and manage their access.
-
-We could just save the access_token for a team owner, but that seems
-like a bad idea. We can still figure out if the user's on a team by
-keeping a little data. Namely, the team's ``id``.
-
-Here's how to enforce team-wise permissions:
-
-1. Organization owner pulls up django admin interface to make a new 
-   voting topic
-
-   * GitHub uses owner's token to list possible teams by hitting
-     ``/orgs/siggame/teams``. This may require ``user`` scope. ::
-
-        {
-         "name": "MegaMinerAI 11",
-         "id": 335202,
-         "slug": "megaminerai-11",
-         ...
-        },
+* Make sure nginx is configured properly
+* Make sure you run ``syncdb``
+* Make sure you run ``collectstatic`` if nginx is configured to serve
+  out of vote/var/static
+* Make sure the GitHub application is configured properly. It may not
+  always point to megaminerai.com.
 
 
-2. Owner fills out the form, chooses the team, and lists some choices
-   to vote on
+Github Organization Checking
+----------------------------
 
-   * Voting app saves the chosen team and its corresponding id
+The app uses the ``user:email`` and ``repo`` OAuth scopes from the 
+GitHub API. They don't provide very fine-grained access controls, so 
+we have to request read/write tokens for user repos. It's a consequence
+of some users being private members of the organization.
 
-3. User tries to access a ballot
+If a member is on a private MegaMinerAI SIG-Game GitHub team, they are 
+a private member of the organization. Meaning, their membership in the 
+organization isn't dispayed publicly on their profile. To see whether
+they're a member of a SIG-Game team (and hence the oraganization), we 
+need to have access to their private repos. The only way to see that is
+by using the ``repo`` scope, which allows read-write to all public
+and private repositories.
 
-   * Voting app hits ``/teams/:id/members``, where ``:id`` is the team's id 
-     which was saved in step 1.
-   * If the user is a member, we get an HTTP 200 back. Otherwise, they're
-     not a member, so redirect them away
+Them's the breaks.
