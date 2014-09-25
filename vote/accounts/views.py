@@ -19,7 +19,7 @@ class LoginStageOneView(RedirectView):
         state = State.objects.create()
         query_string = urlencode({'client_id': settings.GITHUB_CLIENT_ID,
                                   'state': state,
-                                  'scope': 'user:email,repo'})
+                                  'scope': 'user:email,read:org'})
 
         return 'https://github.com/login/oauth/authorize?' + query_string
 
